@@ -11,6 +11,7 @@ export class Pandemic
     this.interval;
     this.cure = 0;
     this.type = type;
+    this.reveal = false;
   }
 
   StartInfection(seconds = 1)
@@ -33,55 +34,55 @@ export class Pandemic
 
     if(this.cure >= 100)
     {
-      if(this.healthy < 1000)
+      let amountCured = 2000;
+      if(this.healthy < amountCured)
       {
         this.cured += this.healthy;
         this.healthy = 0;
       }
       else
       {
-        this.cured += 1000;
-        this.healthy -= 1000;
+        this.cured += amountCured;
+        this.healthy -= amountCured;
       }
-      if(this.infected < 1000)
+
+      if(this.infected < amountCured)
       {
         this.cured += this.infected;
         this.infected = 0;
       }
       else
       {
-        this.cured += 1000;
-        this.infected -= 1000;
+        this.cured += amountCured;
+        this.infected -= amountCured;
       }
     }
-    else if(this.cure > 0)
+    else if(this.cure > 8)
     {
-      if(this.cure > 8)
-      {
-        this.cure -= 8;
-      }
-      else
-      {
-        this.cure = 0;
-      }
 
+      this.cure -= 8;
+    }
+    else
+    {
+      this.cure = 0;
     }
 
-    if(this.healthy > 0)
+    if(this.healthy > floorTick)
     {
       this.healthy -= floorTick;
       this.infected += floorTick;
     }
     else
     {
+      this.infected += this.healthy;
       this.healthy = 0;
     }
 
-    this.dead = this.totalPopulation - (this.healthy+this.infected+this.cured);
     if((this.infected > 250 || this.dead > 0) && this.infected > 0)
     {
-      let goingToDie = Math.ceil(this.infected * 0.05);
-      this.infected -= goingToDie;
+      let currentDeathPerTick = Math.ceil(this.infected * 0.10);
+
+      this.infected -= currentDeathPerTick;
     }
 
     this.dead = this.totalPopulation - (this.healthy+this.infected+this.cured);
@@ -108,6 +109,10 @@ export class Pandemic
     {
       this.cure = 100;
     }
+    if(this.cure >= 50)
+    {
+      this.reveal = true;
+    }
   }
 
   SetType(type)
@@ -126,6 +131,12 @@ export class Pandemic
     default:
       this.type="Virus";
     }
+  }
+
+  RandomInfection()
+  {
+    let type = Math.floor(GetRandomArbitrary(1,3));
+    this.SetType(type);
   }
 
 
@@ -157,6 +168,16 @@ export class Pandemic
   GetCure()
   {
     return Math.round(this.cure);
+  }
+
+  GetReveal()
+  {
+    return this.reveal;
+  }
+
+  GetType()
+  {
+    return this.type;
   }
 
 }

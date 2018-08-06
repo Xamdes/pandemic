@@ -8,13 +8,20 @@ export class Pandemic
     this.dead = 0;
     this.infected = 0;
     this.infectedPerTick = 10;
+    this.interval;
   }
 
-  StartInfection(occurance = 1)
+  StartInfection(seconds = 1)
   {
-    const seconds = occurance*1000;
-    let infection = this.InfectionSpread();
-    setInterval(function(){infection;}, seconds);
+    const milliseconds = seconds*1000;
+    this.interval = setInterval(() => {
+      this.InfectionSpread();
+    },milliseconds);
+  }
+
+  StopInfection()
+  {
+    clearInterval(this.interval);
   }
 
   InfectionSpread()

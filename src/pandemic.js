@@ -34,27 +34,29 @@ export class Pandemic
 
     if(this.cure >= 100)
     {
-      let amountCured = 2000;
-      if(this.healthy < amountCured)
+      let healthyAmountCured = Math.floor(this.healthy*0.1);
+      let infectedAmountCured = Math.floor(this.infected*0.05);
+
+      if(this.healthy < healthyAmountCured)
       {
         this.cured += this.healthy;
         this.healthy = 0;
       }
       else
       {
-        this.cured += amountCured;
-        this.healthy -= amountCured;
+        this.cured += healthyAmountCured;
+        this.healthy -= healthyAmountCured;
       }
 
-      if(this.infected < amountCured)
+      if(this.infected < infectedAmountCured)
       {
         this.cured += this.infected;
         this.infected = 0;
       }
       else
       {
-        this.cured += amountCured;
-        this.infected -= amountCured;
+        this.cured += infectedAmountCured;
+        this.infected -= infectedAmountCured;
       }
     }
     else if(this.cure > 8)

@@ -3,7 +3,7 @@ import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles.css';
 
-const pandemicOne = new Pandemic(100000);
+const pandemicOne = new Pandemic(6000000000);
 pandemicOne.RandomInfection();
 pandemicOne.StartInfection();
 

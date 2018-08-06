@@ -20,18 +20,18 @@ describe('Pandemic', function()
     newPandemic.StartInfection();
     jasmine.clock().tick(1001);
     expect(newPandemic.GetInfected()).toEqual(10);
-    expect(newPandemic.GetNormal()).toEqual(990);
+    expect(newPandemic.GetHealthy()).toEqual(990);
   });
 
   it('test ending infection', function() {
     newPandemic.StartInfection();
     jasmine.clock().tick(10001);
     expect(newPandemic.GetInfected()).toEqual(100);
-    expect(newPandemic.GetNormal()).toEqual(900);
+    expect(newPandemic.GetHealthy()).toEqual(900);
     newPandemic.StopInfection();
     jasmine.clock().tick(10001);
     expect(newPandemic.GetInfected()).toEqual(100);
-    expect(newPandemic.GetNormal()).toEqual(900);
+    expect(newPandemic.GetHealthy()).toEqual(900);
   });
 
 });

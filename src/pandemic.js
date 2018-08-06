@@ -7,7 +7,7 @@ export class Pandemic
     this.cured = 0;
     this.dead = 0;
     this.infected = 0;
-    this.infectedPerTick = 10;
+    this.infectedPerTick = 100;
     this.interval;
     this.cure = 0;
     this.type = type;
@@ -28,57 +28,63 @@ export class Pandemic
 
   InfectionSpread()
   {
-    let tempHealthy = this.healthy;
-    let tempInfected = this.infected;
-    let infectedTick = this.infectedPerTick;
-    let tempDead = this.dead;
-    let floorTick = Math.floor(infectedTick);
-    infectedTick *= (1+GetRandomArbitrary(0.1,0.3));
+    let floorTick = Math.floor(this.infectedPerTick);
+    this.infectedPerTick *= (1+GetRandomArbitrary(0.1,0.3));
 
     if(this.cure >= 100)
     {
-      if(tempHealthy < 1000)
+      if(this.healthy < 1000)
       {
-        this.cured += tempHealthy;
-        tempHealthy = 0;
+        this.cured += this.healthy;
+        this.healthy = 0;
       }
       else
       {
         this.cured += 1000;
-        tempHealthy -= 1000;
+        this.healthy -= 1000;
       }
-      if(tempInfected < 1000)
+      if(this.infected < 1000)
       {
-        this.cured += tempInfected;
-        tempInfected = 0;
+        this.cured += this.infected;
+        this.infected = 0;
       }
       else
       {
         this.cured += 1000;
-        tempInfected -= 1000;
+        this.infected -= 1000;
       }
     }
-
-    if(tempHealthy > 0)
+    else if(this.cure > 0)
     {
-      tempHealthy -= floorTick;
-      tempInfected += floorTick;
+      if(this.cure > 8)
+      {
+        this.cure -= 8;
+      }
+      else
+      {
+        this.cure = 0;
+      }
+
+    }
+
+    if(this.healthy > 0)
+    {
+      this.healthy -= floorTick;
+      this.infected += floorTick;
     }
     else
     {
-      tempHealthy = 0;
+      this.healthy = 0;
     }
 
-    if((tempInfected > 250 || tempDead > 0) && tempInfected > 0)
-    {
-      let goingToDie = Math.ceil(tempInfected * 0.05);
-      tempInfected -= goingToDie;
-    }
-
-    this.healthy = tempHealthy;
-    this.infected = tempInfected;
     this.dead = this.totalPopulation - (this.healthy+this.infected+this.cured);
-    this.infectedPerTick = infectedTick;
+    if((this.infected > 250 || this.dead > 0) && this.infected > 0)
+    {
+      let goingToDie = Math.ceil(this.infected * 0.05);
+      this.infected -= goingToDie;
+    }
+
+    this.dead = this.totalPopulation - (this.healthy+this.infected+this.cured);
   }
 
   SetInfectionPerTickAmount(amount)

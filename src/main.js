@@ -20,9 +20,10 @@ $(function()
     $("#infected").html(pandemicOne.GetInfected());
     $("#cured").html(pandemicOne.GetCured());
     $("#dead").html(pandemicOne.GetDead());
+    $("#cure").html(pandemicOne.GetCure());
   },1000);
 
-  $("#cure").html(pandemicOne.GetCure());
+
 
 
   $("#search-generic").submit(function(e){

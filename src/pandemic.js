@@ -11,7 +11,9 @@ export class Pandemic
     this.interval;
     this.cure = 0;
     this.type = type;
-    this.reveal = false;
+    this.antiVaxxers = 0;
+    this.infectedAntiVaxxers = 0;
+    this.researchers = 0;
   }
 
   StartInfection(seconds = 1)
@@ -29,14 +31,20 @@ export class Pandemic
 
   InfectionSpread()
   {
-    let floorTick = Math.floor(this.infectedPerTick);
-    this.infectedPerTick *= (1+GetRandomArbitrary(0.1,0.3));
 
+    if(this.cure < 100)
+    {
+      this.cure += (this.researchers*.1);
+    }
+
+    //Cure the population every tick
     if(this.cure >= 100)
     {
+      this.cure = 100;
       let healthyAmountCured = Math.floor(this.healthy*0.1);
       let infectedAmountCured = Math.floor(this.infected*0.05);
 
+      //Cure Healthy
       if(this.healthy < healthyAmountCured)
       {
         this.cured += this.healthy;
@@ -48,6 +56,7 @@ export class Pandemic
         this.healthy -= healthyAmountCured;
       }
 
+      //Cure Infected
       if(this.infected < infectedAmountCured)
       {
         this.cured += this.infected;
@@ -61,14 +70,34 @@ export class Pandemic
     }
     else if(this.cure > 8)
     {
-
-      this.cure -= 8;
+      let sabotage = 8+(this.antiVaxxers+this.infectedAntiVaxxers)%25;
+      this.cure -= sabotage;
     }
     else
     {
       this.cure = 0;
     }
 
+    //Increase Anti-Vaxxers Movement
+    if(this.cure >=25)
+    {
+      let vaxxersIncrease = GetRandomArbitrary(50,250);
+
+      if(this.healthy > vaxxersIncrease)
+      {
+        this.antiVaxxers += vaxxersIncrease;
+        this.healthy -= vaxxersIncrease;
+      }
+      else
+      {
+        this.antiVaxxers += this.healthy;
+        this.healthy = 0;
+      }
+
+    }
+
+    //Turn Healthy into Infected every tick
+    let floorTick = Math.floor(this.infectedPerTick);
     if(this.healthy > floorTick)
     {
       this.healthy -= floorTick;
@@ -80,14 +109,54 @@ export class Pandemic
       this.healthy = 0;
     }
 
-    if((this.infected > 250 || this.dead > 0) && this.infected > 0)
+    //Turn Anti-Vaxxers into Infected Anti-Vaxxers every tick
+    floorTick = this.antiVaxxers*0.25;
+    if(floorTick < 100)
     {
-      let currentDeathPerTick = Math.ceil(this.infected * 0.10);
-
-      this.infected -= currentDeathPerTick;
+      floorTick = 100;
+    }
+    if(this.antiVaxxers > floorTick)
+    {
+      this.antiVaxxers -= floorTick;
+      this.infectedAntiVaxxers += floorTick;
+    }
+    else
+    {
+      this.infectedAntiVaxxers += this.antiVaxxers;
+      this.antiVaxxers = 0;
     }
 
-    this.dead = this.totalPopulation - (this.healthy+this.infected+this.cured);
+    //Start killing 10% infected
+    if((this.infected > 250 || this.dead > 0) && this.infected > 0)
+    {
+      if(this.infected < 25)
+      {
+        this.infected = 0;
+      }
+      else
+      {
+        this.infected -= Math.ceil(this.infected * 0.10);
+      }
+    }
+
+    //Start killing 10% infected Anti Vaxxers
+    if((this.infectedAntiVaxxers > 250 || this.dead > 0) && this.infectedAntiVaxxers > 0)
+    {
+      if(this.infectedAntiVaxxers < 10)
+      {
+        this.infectedAntiVaxxers = 0;
+      }
+      else
+      {
+        this.infectedAntiVaxxers -= Math.ceil(this.infectedAntiVaxxers * 0.10);
+      }
+    }
+
+    //Update number of dead
+    this.dead = this.totalPopulation - (this.healthy+this.infected+this.cured+this.antiVaxxers+this.infectedAntiVaxxers);
+
+    //Update Infected Per Tick
+    this.infectedPerTick *= (1+GetRandomArbitrary(0.1,0.3));
   }
 
   SetInfectionPerTickAmount(amount)
@@ -95,26 +164,12 @@ export class Pandemic
     this.infectedPerTick = amount;
   }
 
-  FindCure(guess)
+  ResearchCure()
   {
     let min = 1;
     let max = 3;
 
-    if(guess === this.type)
-    {
-      min = 2;
-      max = 4;
-    }
-
     this.cure += GetRandomArbitrary(min,max);
-    if(this.cure >= 100)
-    {
-      this.cure = 100;
-    }
-    if(this.cure >= 50)
-    {
-      this.reveal = true;
-    }
   }
 
   SetType(type)
@@ -144,17 +199,17 @@ export class Pandemic
 
   GetHealthy()
   {
-    return this.healthy;
+    return Math.floor(this.healthy);
   }
 
   GetInfected()
   {
-    return this.infected;
+    return Math.floor(this.infected);
   }
 
   GetDead()
   {
-    return this.dead;
+    return Math.floor(this.dead);
   }
 
   GetTotalPop()
@@ -174,12 +229,47 @@ export class Pandemic
 
   GetReveal()
   {
-    return this.reveal;
+    return (this.cure >= 50);
   }
 
   GetType()
   {
     return this.type;
+  }
+
+  GetResearchers()
+  {
+    return Math.floor(this.researchers);
+  }
+
+  SetResearchers(value)
+  {
+    this.researchers = value;
+  }
+
+  IncreaseResearchers(value)
+  {
+    this.researchers += value;
+  }
+
+  GetAntiVaxxers()
+  {
+    return Math.floor(this.antiVaxxers);
+  }
+
+  SetAntiVaxxers(value)
+  {
+    this.antiVaxxers = value;
+  }
+
+  IncreaseAntiVaxxers(value)
+  {
+    this.antiVaxxers += value;
+  }
+
+  GetInfectedAntiVaxxers()
+  {
+    return Math.floor(this.infectedAntiVaxxers);
   }
 
 }

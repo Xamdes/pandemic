@@ -21,6 +21,9 @@ $(function()
     $("#infected").html(pandemicOne.GetInfected());
     $("#cured").html(pandemicOne.GetCured());
     $("#dead").html(pandemicOne.GetDead());
+    $("#anti-vaxxers").html(pandemicOne.GetAntiVaxxers());
+    $("#infected-anti-vaxxers").html(pandemicOne.GetInfectedAntiVaxxers());
+    $("#researchers").html(pandemicOne.GetResearchers());
     $("#cure").html(pandemicOne.GetCure()+"%");
     if(pandemicOne.GetReveal())
     {
@@ -38,21 +41,17 @@ $(function()
     $("#cure").html(pandemicOne.GetCure()+"%");
   });
 
-  $("#search-virus").submit(function(e){
+  $("#hire-researchers").submit(function(e){
     e.preventDefault();
-    pandemicOne.FindCure("Virus");
-    $("#cure").html(pandemicOne.GetCure()+"%");
+    pandemicOne.IncreaseResearchers(1);
+    $("#researchers").html(pandemicOne.GetResearchers());
   });
 
-  $("#search-fungal").submit(function(e){
+  $("#fight-vaxxers").submit(function(e){
     e.preventDefault();
-    pandemicOne.FindCure("Fungal");
-    $("#cure").html(pandemicOne.GetCure()+"%");
   });
 
-  $("#search-bacterial").submit(function(e){
+  $("#release").submit(function(e){
     e.preventDefault();
-    pandemicOne.FindCure("Bacterial");
-    $("#cure").html(pandemicOne.GetCure()+"%");
   });
 });

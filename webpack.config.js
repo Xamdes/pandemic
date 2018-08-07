@@ -13,7 +13,7 @@ module.exports =
     path: path.resolve(__dirname, 'dist')
   },
   devtool: 'source-map',
-  //dev-source-map for development
+  //eval-source-map for development
   //source-map for production
   devServer: {
     contentBase: './dist'

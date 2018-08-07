@@ -16,28 +16,12 @@ $(function()
 {
 
   setInterval(() => {
-    $("#total").html(pandemicOne.GetTotalPop());
-    $("#healthy").html(pandemicOne.GetHealthy());
-    $("#infected").html(pandemicOne.GetInfected());
-    $("#cured").html(pandemicOne.GetCured());
-    $("#dead").html(pandemicOne.GetDead());
-    $("#anti-vaxxers").html(pandemicOne.GetAntiVaxxers());
-    $("#infected-anti-vaxxers").html(pandemicOne.GetInfectedAntiVaxxers());
-    $("#researchers").html(pandemicOne.GetResearchers());
-    $("#cure").html(pandemicOne.GetCure()+"%");
-    if(pandemicOne.GetReveal())
-    {
-      $("#type").html(pandemicOne.GetType());
-    }
-    else
-    {
-      $("#type").html("???");
-    }
+    UpdateStatistics();
   },1000);
 
   $("#search-generic").submit(function(e){
     e.preventDefault();
-    pandemicOne.FindCure();
+    pandemicOne.ResearchCure();
     $("#cure").html(pandemicOne.GetCure()+"%");
   });
 
@@ -55,3 +39,24 @@ $(function()
     e.preventDefault();
   });
 });
+
+function UpdateStatistics()
+{
+  $("#total").html(pandemicOne.GetTotalPop());
+  $("#healthy").html(pandemicOne.GetHealthy());
+  $("#infected").html(pandemicOne.GetInfected());
+  $("#cured").html(pandemicOne.GetCured());
+  $("#dead").html(pandemicOne.GetDead());
+  $("#anti-vaxxers").html(pandemicOne.GetAntiVaxxers());
+  $("#infected-anti-vaxxers").html(pandemicOne.GetInfectedAntiVaxxers());
+  $("#researchers").html(pandemicOne.GetResearchers());
+  $("#cure").html(pandemicOne.GetCure()+"%");
+  if(pandemicOne.GetReveal())
+  {
+    $("#type").html(pandemicOne.GetType());
+  }
+  else
+  {
+    $("#type").html("???");
+  }
+}
